@@ -23,7 +23,7 @@ public class ProductionManagerment extends AppCompatActivity {
 
         Intent intent = getIntent();
         String text = intent.getStringExtra("menu");
-        Toast.makeText(getApplicationContext(), text + "에서 왔습니다.", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "메뉴에서" + text + "을 클릭해 왔습니다.", Toast.LENGTH_LONG).show();
 
         button9.setOnClickListener(new View.OnClickListener() {
             @Override

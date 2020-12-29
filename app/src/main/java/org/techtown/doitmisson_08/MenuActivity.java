@@ -72,7 +72,7 @@ public class MenuActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode != 102) //만약 서브 액티비티에서 로그인으로 이동하려면 메뉴를 거처야 하는데, 거칠때 메뉴가 꺼지는 코드
+        if(resultCode == 103 || resultCode == 105 || resultCode == 107) //만약 서브 액티비티에서 로그인으로 이동하려면 메뉴를 거처야 하는데, 거칠때 메뉴가 꺼지는 코드
             finish();
 
     }
