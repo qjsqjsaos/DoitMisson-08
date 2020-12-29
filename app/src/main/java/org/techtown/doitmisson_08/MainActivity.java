@@ -9,68 +9,41 @@ import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    public static final int MENU_CODE_FROM_MAIN = 101; //요청코드
-    public static final int MAIN_CODE_FROM_CUSTOMER = 112;
-    public static final int MAIN_CODE_FROM_SALES = 113;
-    public static final int MAIN_CODE_FROM_PRODUCT = 114;
 
-    EditText editText;
-    EditText editText2;
-    String ID;
-    String PW;
+    int RESULT_CODE_MAIN = 100; //메뉴로 보낸뒤 다시 메뉴에서 이 값을 보냄
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultcode, @Nullable Intent data) { //받는 코드
-        super.onActivityResult(requestCode, resultcode, data);
-        if(resultcode == MAIN_CODE_FROM_CUSTOMER){
-            Toast.makeText(getApplicationContext(), "고객관리에서 응답", Toast.LENGTH_LONG).show();;
-        }
-        else if(resultcode == MAIN_CODE_FROM_SALES) {
-            Toast.makeText(getApplicationContext(), "매출관리에서 응답", Toast.LENGTH_LONG).show();
-        }
-        else if(resultcode == MAIN_CODE_FROM_PRODUCT) {
-            Toast.makeText(getApplicationContext(), "상품관리에서 응답", Toast.LENGTH_LONG).show();
-        }
-
-    }
+    TextView textView;
+    TextView textView2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        editText = findViewById(R.id.editText);
-        editText2 = findViewById(R.id.editText2);
-
-        editText.getText().toString();
-        editText2.getText().toString();
-
         Button button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() { //보내는 코드
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkID()){
+                String userid = textView.getText().toString(); //입력값 가져와서 변수에 넣기
+                String userpw = textView2.getText().toString();
+
+                if(textView.length() != 0 && textView2.length() != 0) { //둘다 참이 되어야 성립되는 연산자 &&, ~이 아닐때 => "!="
                     Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-                    SimpleData data = new SimpleData(ID, PW);
-                    intent.putExtra("data", (Parcelable) data);
-                    startActivityForResult(intent,MENU_CODE_FROM_MAIN); //요청코드
+                    intent.putExtra("userid",userid);
+                    intent.putExtra("userpw", userpw);
+                    startActivityForResult(intent, RESULT_CODE_MAIN);
+                    Toast.makeText(getApplicationContext(), "로그인 되었습니다.", Toast.LENGTH_LONG).show();
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "ID/PW를 입력하세요", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "아이디와 비밀번호를 확인해주세요", Toast.LENGTH_LONG).show();
                 }
             }
         });
-    }
-    private boolean checkID(){
-        ID = editText.getText().toString();
-        PW = editText2.getText().toString();
 
-        if(ID.length() < 1 || PW.length() < 1) {
-            return false;
-        }
-        else return true;
     }
 }
+

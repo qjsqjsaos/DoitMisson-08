@@ -10,64 +10,23 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class MenuActivity extends AppCompatActivity {
-    public static final int MENU_CODE_FROM_MAIN = 101;
-    public static final int CUSTOMER_CODE_FROM_MENU = 102;
-    public static final int MAIN_CODE_FROM_CUSTOMER = 112;
-    public static final int MENU_CODE_FROM_CUSTOMER = 122;
-    public static final int SALES_CODE_FROM_MENU = 103;
-    public static final int MAIN_CODE_FROM_SALES = 113;
-    public static final int MENU_CODE_FROM_SALES = 123;
-    public static final int PRODUCT_CODE_FROM_MENU = 104;
-    public static final int MAIN_CODE_FROM_PRODUCT = 114;
-    public static final int MENU_CODE_FROM_PRODUCT = 124;
-    SimpleData data;
 
-
-    protected void onActivityResult(int requestcode, int resultcode Intent data) { //받는 코드
-        super.onActivityResult(requestcode,resultcode, data);
-        if(resultcode == MENU_CODE_FROM_MAIN) {
-            Toast.makeText(getApplicationContext(), "메인 -> 메뉴", Toast.LENGTH_LONG).show();
-        }
-        else if(resultcode == MENU_CODE_FROM_CUSTOMER) {
-            Toast.makeText(getApplicationContext(), "고객관리 -> 메뉴", Toast.LENGTH_LONG).show();
-        }
-        else if(resultcode == MAIN_CODE_FROM_CUSTOMER) { //고객관리에서 메인
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            setResult(MAIN_CODE_FROM_CUSTOMER, intent); //메뉴를 거쳤다가 메인으로 가게 만들기 위함(코드를 메인으로 전달)
-            finish(); //메인으로 돌아가면서 앞에 메뉴와 고객관리 창들은 닫힌다.
-        }
-        else if(resultcode == MENU_CODE_FROM_SALES) {
-            Toast.makeText(getApplicationContext(), "매출관리 -> 메뉴", Toast.LENGTH_LONG).show();
-        }
-        else if(resultcode == MAIN_CODE_FROM_SALES) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            setResult(MAIN_CODE_FROM_SALES, intent);
-            finish();
-        }
-        else if(resultcode == MENU_CODE_FROM_PRODUCT){
-            Toast.makeText(getApplicationContext(), "상품관리 -> 메뉴", Toast.LENGTH_LONG).show();
-        }
-        else if(resultcode == MAIN_CODE_FROM_PRODUCT) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            setResult(MAIN_CODE_FROM_PRODUCT, intent);
-            finish();
-        }
-    }
+    int RESULT_CODE_MENU = 101;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) { //보내는 코드
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        data = getData(getIntent());
+        Intent intent = getIntent();
+        String userid = intent.getStringExtra("userid"); //메인에 putExtra로 넣어 놨던 userid를 가져온다.
+        Toast.makeText(getApplicationContext(), userid + "님이 로그인 하셨습니다.(Main)", Toast.LENGTH_LONG).show();
 
         Button button2 = findViewById(R.id.button2);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CustomerManagement.class);
-                intent.putExtra("data", data);
-                startActivityForResult(intent, CUSTOMER_CODE_FROM_MENU);
+                goSub("고객");
             }
         });
 
@@ -75,9 +34,7 @@ public class MenuActivity extends AppCompatActivity {
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SalesManagement.class);
-                intent.putExtra("data", data);
-                startActivityForResult(intent, SALES_CODE_FROM_MENU);
+                goSub("매출");
             }
         });
 
@@ -85,20 +42,39 @@ public class MenuActivity extends AppCompatActivity {
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ProductionManagerment.class);
-                intent.putExtra("data", data);
-                startActivityForResult(intent, PRODUCT_CODE_FROM_MENU);
+                goSub("상품");
             }
         });
+
     }
-    private SimpleData getData(Intent intent) { //데이터 전달은 putExtra 데이터를 받는 것은 getExtras이다.
-        if(intent != null){
-            Bundle bundle = intent.getExtras();
-            SimpleData data = bundle.getParcelable("data");
-            return data;
+
+    private void goSub(String menu) {
+        String menuName = menu;
+        if(menuName == "고객"){
+            Intent intent = new Intent(getApplicationContext(), CustomerManagement.class);
+            intent.putExtra("menu", menuName);
+            startActivityForResult(intent, RESULT_CODE_MENU);
         }
-        else {
-            return null;
+        else if(menuName == "매출"){
+            Intent intent = new Intent(getApplicationContext(), SalesManagement.class);
+            intent.putExtra("menu", menuName);
+            startActivityForResult(intent, RESULT_CODE_MENU);
         }
+        else if(menuName == "상품") {
+            Intent intent = new Intent(getApplicationContext(), ProductionManagerment.class);
+            intent.putExtra("menu", menuName);
+            startActivityForResult(intent, RESULT_CODE_MENU);
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode != 102) //만약 서브 액티비티에서 로그인으로 이동하려면 메뉴를 거처야 하는데, 거칠때 메뉴가 꺼지는 코드
+            finish();
+
     }
 }
+
