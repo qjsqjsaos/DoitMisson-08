@@ -21,6 +21,10 @@ public class SalesManagement extends AppCompatActivity {
         Button button7 = findViewById(R.id.button7);
         Button button8 = findViewById(R.id.button8);
 
+        Intent intent = getIntent();
+        String text = intent.getStringExtra("menu");
+        Toast.makeText(getApplicationContext(), text + "에서 왔습니다.", Toast.LENGTH_LONG).show();
+
         button7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

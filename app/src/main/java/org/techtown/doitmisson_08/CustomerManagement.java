@@ -24,6 +24,10 @@ public class CustomerManagement extends AppCompatActivity {
         Button button5 = findViewById(R.id.button5);
         Button button6 = findViewById(R.id.button6);
 
+        Intent intent = getIntent();
+        String text = intent.getStringExtra("menu");
+        Toast.makeText(getApplicationContext(), text + "에서 왔습니다.", Toast.LENGTH_LONG).show();
+
         button5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -21,6 +21,10 @@ public class ProductionManagerment extends AppCompatActivity {
         Button button9 = findViewById(R.id.button9);
         Button button10 = findViewById(R.id.button10);
 
+        Intent intent = getIntent();
+        String text = intent.getStringExtra("menu");
+        Toast.makeText(getApplicationContext(), text + "에서 왔습니다.", Toast.LENGTH_LONG).show();
+
         button9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
